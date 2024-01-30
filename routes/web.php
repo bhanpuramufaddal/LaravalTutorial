@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::controller(TaskController::class)
+    ->prefix('tasks/{task}')
+    ->as('tasks.')
+    ->group(function () {
+        Route::patch('complete', 'complete')->name('complete');
+        Route::patch('yet_complete', 'yetComplete')->name('yet_complete');
+    });
+
+Route::resource('tasks', TaskController::class);
