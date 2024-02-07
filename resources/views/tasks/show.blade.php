@@ -4,9 +4,11 @@
     <meta charset="utf-8">
     <title>Laravel</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 </head>
 <body>
-<section class="hero is-primary">
+<section class="hero is-black">
     <div class="hero-body">
         <p class="title">
             Task Managements
@@ -105,9 +107,49 @@
                 </div>
             </div>
 
+            <section class="section">
+                <h2 class="title is-4">Comments</h2>
+                <div class="container">
+                    @forelse ($task->comments as $comment)
+                        <article class="media">
+                            <div class="media-content">
+                                <div class="content">
+                                    <p>
+                                        {{ $comment->comment }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <nav class="level is-mobile">
+                                <div class="level-left">
+                                    <a class="level-item" aria-label="edit" href="{{ route('tasks.comment.edit', $comment) }}">
+                                        <span class="icon is-small has-text-black">
+                                            <i class="fas fa-edit" aria-hidden="true"></i>
+                                        </span>
+                                    </a>
+                                    <a class="level-item" aria-label="delete" href="">
+                                        <span class="icon is-small has-text-black">
+                                            <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                            </nav>
+
+                        </article>
+                    @empty
+                        <p>No comments yet.</p>
+                    @endforelse
+                </div>
+            </section>
+
+
             <footer class="card-footer">
-                <a class="card-footer-item button" href="{{ route('tasks.edit', $task) }}">
-                    Edit
+                <a class="card-footer-item button is-black" href="{{ route('tasks.edit', $task) }}">
+                    Edit Task
+                </a>
+
+                <a class="card-footer-item button has-background-grey-light" href="{{ route('tasks.comment.create', $task) }}">
+                    Add Comment
                 </a>
             </footer>
         </div>

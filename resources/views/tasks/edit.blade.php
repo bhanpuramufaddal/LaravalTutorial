@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
 </head>
 <body>
-<section class="hero is-primary">
+<section class="hero is-black">
     <div class="hero-body">
         <p class="title">
             Task Managements
@@ -110,7 +110,7 @@
                 </div>
 
                 <footer class="card-footer">
-                    <button type="submit" class="card-footer-item button is-primary">
+                    <button type="submit" class="card-footer-item button is-black">
                         update
                     </button>
                 </footer>

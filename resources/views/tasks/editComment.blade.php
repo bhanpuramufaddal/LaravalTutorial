@@ -9,7 +9,7 @@
 <section class="hero is-black">
     <div class="hero-body">
         <p class="title">
-            Task Managements
+            Edit your Comment
         </p>
     </div>
 </section>
@@ -24,40 +24,26 @@
     </div>
 @endif
 <section class="section">
-    <h1 class="title">Tasks | Create</h1>
-    <form method="post" action="{{ route('tasks.store') }}">
+    <form method="post" action="{{ route('tasks.comment.update', $comment) }}">
         @csrf
         <div class="card">
             <div class="card-content">
-                <div class="field is-horizontal">
-                    <div class="field-label is-normal">
-                        <label class="label" for="title">Title</label>
-                    </div>
-                    <div class="field-body">
-                        <div class="field">
-                            <p class="control">
-                                <input id="title" name="title" class="input" type="text" placeholder="Task title">
-                            </p>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="field is-horizontal">
                     <div class="field-label is-normal">
-                        <label class="label" for="description">Description</label>
+                        <label class="label" for="description">Comment</label>
                     </div>
                     <div class="field-body">
                         <div class="field">
-                            <div class="control">
-                                <textarea id="description" name="description" class="textarea"
-                                          placeholder="Task description"></textarea>
+                        <div class="control">
+                                <textarea id="comment" name="comment" class="textarea">{{ $comment->comment }}</textarea>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <footer class="card-footer">
-                    <button type="submit" class="card-footer-item button is-black">Create</button>
+                    <button type="submit" class="card-footer-item button is-black">Edit Coment</button>
                 </footer>
             </div>
         </div>

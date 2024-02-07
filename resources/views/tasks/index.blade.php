@@ -5,12 +5,54 @@
     <title>Laravel</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <style>
+        .icon-button {
+            font-size: 1.5em; /* Increase icon size */
+            margin-left: 0.5em; /* Add space between buttons */
+            cursor: pointer; /* Change cursor to pointer on hover */
+        }
+        .box {
+            position: relative; /* Set relative positioning for the parent */
+            padding-right: 140px; /* Add padding to prevent text from overlapping buttons */
+        }
+        .buttons-container {
+            position: absolute; /* Absolute positioning for the buttons */
+            right: 10px; /* Place the buttons 10px from the right edge */
+            top: 50%; /* Align buttons vertically */
+            transform: translateY(-50%); /* Center buttons vertically */
+            display: flex;
+            flex-direction: row; /* Align buttons horizontally */
+            align-items: center; /* Center buttons vertically */
+        }
+        .buttons-container > form,
+        .buttons-container > a {
+            margin-left: 0.5em; /* Add space between buttons */
+        }
+        .buttons-container > form button,
+        .buttons-container > a {
+            border: none; /* Remove button border */
+            background: none; /* Remove button background */
+            padding: 0; /* Remove button padding */
+        }
+        .create-task-button {
+            display: block; /* Make the button a block element */
+            background-color: black; /* Set the button background color to black */
+            color: white; /* Set the button text color to white */
+            padding: 0.5em 1em; /* Add horizontal padding to the button */
+            margin-bottom: 1em; /* Add margin bottom to prevent bumping into task panel */
+            text-decoration: none; /* Remove text decoration */
+        }
+
+        .create-task-button:hover {
+            color: white; /* Set the button text color to white on hover */
+        }
+    </style>
 </head>
 <body>
-<section class="hero is-primary">
+<section class="hero is-black">
     <div class="hero-body">
         <p class="title">
-            Task Managements
+            Task Management
         </p>
     </div>
 </section>
@@ -26,80 +68,57 @@
 @endif
 <section class="section">
     <h1 class="title">Tasks | Index</h1>
-    <h2 class="subtitle">Can create new task <a href="{{ route('tasks.create') }}">here.</a></h2>
-    <div class="tile">
-        @foreach($tasks as $task)
-            <div class="tile is-1" style="margin: 4px">
-                <div class="box @if($task->is_completed) has-background-grey-lighter @endif">
-                    <article class="media">
-                        <div class="media-content">
-                            <div class="content">
-                                <p>
-                                    <strong>{{ mb_strimwidth($task->title, 0, 15, '...') }}</strong>
-                                    <br>
-                                    {{ mb_strimwidth($task->description, 0, 15, '...') }}
-                                </p>
+    <h2 class="subtitle">
+        <a href="{{ route('tasks.create') }}" class="create-task-button">Create Task</a>
+    </h2>
+    <div class="tile is-ancestor">
+        <div class="tile is-vertical">
+            @foreach($tasks as $task)
+                <div class="tile is-parent">
+                    <div class="tile is-child box @if($task->is_completed) has-background-grey-lighter @endif">
+                        <article class="media">
+                            <div class="media-content">
+                                <div class="content">
+                                    <p>
+                                        <strong>{{ $task->title }}</strong>
+                                        <br>
+                                        {{ $task->description }}
+                                    </p>
+                                </div>
                             </div>
-
-                            <nav class="level">
-                                <div class="level-left">
-                                </div>
-                                <div class="level-right">
-                                    @if($task->is_completed)
-                                        <div class="level-item">
-                                            <form method="post" action="{{ route('tasks.yet_complete', $task) }}">
-                                                @csrf
-                                                @method('PATCH')
-                                                <span class="icon">
-                                                <button type="submit" class="has-text-link is-clickable"
-                                                        style="background: none; border: unset">
-                                                    <i class="fa-solid fa-toggle-off"></i>
-                                                </button>
-                                            </span>
-                                            </form>
-                                        </div>
-                                    @else
-                                        <div class="level-item">
-                                            <form method="post" action="{{ route('tasks.complete', $task) }}">
-                                                @csrf
-                                                @method('PATCH')
-                                                <span class="icon">
-                                                <button type="submit" class="has-text-link is-clickable"
-                                                        style="background: none; border: unset">
-                                                    <i class="fa-solid fa-toggle-on"></i>
-                                                </button>
-                                            </span>
-                                            </form>
-                                        </div>
-                                    @endif
-
-                                    <div class="level-item">
-                                        <form method="post" action="{{ route('tasks.destroy', $task) }}">
-                                            @csrf
-                                            @method('DELETE')
-                                            <span class="icon">
-                                                <button type="submit" class="has-text-link is-clickable"
-                                                        style="background: none; border: unset">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </span>
-                                        </form>
-                                    </div>
-
-                                    <div class="level-item">
-                                        <a href="{{ route('tasks.show', $task) }}">
-                                            <span class="icon">
-                                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                            </span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </nav>
+                        </article>
+                        <div class="buttons-container">
+                            <!-- Show button -->
+                            <a href="{{ route('tasks.show', $task) }}" class="icon-button has-text-black">
+                                <span class="icon">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                </span>
+                            </a>
+                            <!-- Complete/Incomplete toggle button -->
+                            <form method="post" action="{{ $task->is_completed ? route('tasks.yet_complete', $task) : route('tasks.complete', $task) }}">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="icon-button">
+                                    <span class="icon">
+                                        <i class="fa-solid {{ $task->is_completed ? 'fa-toggle-off' : 'fa-toggle-on' }}"></i>
+                                    </span>
+                                </button>
+                            </form>
+                            <!-- Delete button -->
+                            <form method="post" action="{{ route('tasks.destroy', $task) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="icon-button">
+                                    <span class="icon">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </span>
+                                </button>
+                            </form>
                         </div>
-                    </article>
+                    </div>
                 </div>
-            </div>
-        @endforeach
+            @endforeach
+        </div>
     </div>
 </section>
 </body>
