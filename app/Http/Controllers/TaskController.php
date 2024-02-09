@@ -6,8 +6,6 @@ use App\Models\Comment;
 use Illuminate\View\View;
 use App\Http\Requests\Task\StoreRequest;
 use App\Http\Requests\Task\UpdateRequest;
-use Illuminate\Support\Facades\DB;
-use App\Models\Task;
 use Illuminate\Http\RedirectResponse;
 use App\Repositories\TaskRepositoryInterface;
 use App\Http\Requests\Comment\StoreRequest as CommentStoreRequest;
@@ -74,12 +72,14 @@ class TaskController extends Controller
         return to_route('tasks.index');
     }
 
-    public function complete(int $id): RedirectResponse{
+    public function complete(int $id): RedirectResponse
+    {
         $this->taskRepository->markAsCompleted($id);
         return to_route('tasks.index');
     }
 
-    public function yetComplete(int $id): RedirectResponse{
+    public function yetComplete(int $id): RedirectResponse
+    {
         $this->taskRepository->markAsInComplete($id);
         return to_route('tasks.index');
     }
@@ -118,12 +118,4 @@ class TaskController extends Controller
         $task = Comment::find($comment_id)->task;
         return to_route('tasks.show', $task->id)->with(compact('task'));
     }
-
-    // public function deleteComment(Task $task, int $comment_id): RedirectResponse{
-    //     $this->taskRepository->deleteComment($comment_id);
-    //     $task->refresh();
-    //     $tasks = Task::all();
-    //     return to_route('tasks.index')->with(compact('tasks'));
-    // }
-
 }
