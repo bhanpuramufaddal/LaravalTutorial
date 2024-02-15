@@ -120,6 +120,11 @@
             @endforeach
         </div>
     </div>
+
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit" class="button is-fullwidth is-black">Logout</button>
+    </form>
 </section>
 </body>
 </html>

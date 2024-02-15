@@ -9,6 +9,8 @@ use App\Http\Requests\Task\UpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use App\Repositories\TaskRepositoryInterface;
 use App\Http\Requests\Comment\StoreRequest as CommentStoreRequest;
+use App\Models\Task;
+use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
@@ -22,17 +24,21 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index()
     {
         $tasks = $this->taskRepository->index();
-        return view('tasks.index')->with(compact('tasks'));
+        return View('tasks.index')->with(compact('tasks'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
+        $user = $request->user();
+        if (!$user->hasRole('Admin')) {
+            abort(401, 'Unauthorized');
+        }
         return view('tasks.create');
     }
 
@@ -41,6 +47,10 @@ class TaskController extends Controller
      */
     public function store(StoreRequest $request)
     {
+        $user = $request->user();
+        if (!$user->hasRole('Admin')) {
+            abort(401, 'Unauthorized');
+        }
         $this->taskRepository->store($request);
         return to_route('tasks.index');
     }
@@ -51,14 +61,20 @@ class TaskController extends Controller
     public function show($id)
     {
         $task = $this->taskRepository->find($id);
-        return view('tasks.show')->with(compact('task'));
+        return View('tasks.show')->with(compact('task'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(int $id): View
+    public function edit(Request $request, int $id): View
     {
+
+        $user = $request->user();
+        if (!$user->hasRole('Admin')) {
+            abort(401, 'Unauthorized');
+        }
+
         $task = $this->taskRepository->find($id);
         return view('tasks.edit')->with(compact('task'));
     }
@@ -68,27 +84,45 @@ class TaskController extends Controller
      */
     public function update(int $id, UpdateRequest $request): RedirectResponse
     {
+        $user = $request->user();
+        if (!$user->hasRole('Admin')) {
+            abort(401, 'Unauthorized');
+        }
+
         $this->taskRepository->update($id, $request);
         return to_route('tasks.index');
     }
 
-    public function complete(int $id): RedirectResponse
+    public function complete(int $id, Request $request): RedirectResponse
     {
-        $this->taskRepository->markAsCompleted($id);
+        $user = $request->user();
+        if ($user->hasRole('Admin')) {
+            $this->taskRepository->markAsCompleted($id);
+        }
+
         return to_route('tasks.index');
     }
 
-    public function yetComplete(int $id): RedirectResponse
+    public function yetComplete(int $id, Request $request): RedirectResponse
     {
-        $this->taskRepository->markAsInComplete($id);
+        $user = $request->user();
+        if ($user->hasRole('Admin')) {
+            $this->taskRepository->markAsInComplete($id);
+        }
+
         return to_route('tasks.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $id): RedirectResponse
+    public function destroy(int $id, Request $request): RedirectResponse
     {
+        $user = $request->user();
+        if (!$user->hasRole('Admin')) {
+            abort(401, 'Unauthorized');
+        }
+
         $this->taskRepository->delete($id);
         return to_route('tasks.index');
     }

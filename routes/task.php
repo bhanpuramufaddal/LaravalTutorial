@@ -21,6 +21,7 @@ Route::get('/', function () {
 Route::controller(TaskController::class)
     ->prefix('tasks/{id}')
     ->as('tasks.')
+    ->middleware(['auth', 'verified'])
     ->group(function () {
         Route::patch('complete', 'complete')->name('complete');
         Route::patch('yet_complete', 'yetComplete')->name('yet_complete');
@@ -31,4 +32,4 @@ Route::controller(TaskController::class)
         //Route::delete('', 'deleteComment')->name('comment.delete');
     });
 
-Route::resource('tasks', TaskController::class);
+Route::resource('tasks', TaskController::class)->middleware(['auth', 'verified']);
